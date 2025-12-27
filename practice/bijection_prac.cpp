@@ -9,6 +9,7 @@ double f(double x)
 void absoluteErrorBisection(double a, double b)
 {
     double root = (a + b) / 2.0, prevroot;
+    // double root = a - ((b - a) * f(a)) / (f(b) - f(a));
     do
     {
         prevroot = root;
