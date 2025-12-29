@@ -1,0 +1,315 @@
+// BASIC INPUT OUTPUT ASSEMBLY CODE
+
+.MODEL SMALL
+.STACK 100H
+.DATA
+    MSG DB "HELLO WOLRD$"
+.CODE
+MAIN PROC    
+    
+;INPUT TAKING HERE 
+    MOV AH, 1
+    INT 21H  
+    MOV BL, AL    
+    
+;NEW LINE PRINTING
+    MOV AH,2
+    MOV DL, 0AH
+    INT 21H  
+    MOV DL, 0DH 
+    INT 21H      
+    
+;OUTPUT GIVING HERE
+    MOV AH,2
+    MOV DL, BL
+    INT 21H
+        
+    
+MAIN ENDP    
+END MAIN
+
+// HELLO WOLRD PRINTING CODE 
+.MODEL SMALL
+.STACK 100H
+.DATA
+    MSG DB "HELLO WOLRD$" 
+    MSG2 DB 0AH,0DH,"HI$"
+.CODE
+MAIN PROC   
+    
+    ;LOADING DATA   
+    MOV AX, @DATA
+    MOV DS, AX
+    ;PRINTING DATA
+    MOV AH , 9
+    LEA DX, MSG 
+    INT 21H;       
+    
+MOV AH, 4CH
+INT 21H    
+MAIN ENDP    
+END MAIN
+
+//UPPERCASE AND LOWER CASE CODE
+
+.MODEL SMALL
+.STACK 100H
+.DATA
+    MSG DB "ENTER UPPERCASE: $" 
+    MSG2 DB 0AH,0DH,"THE LOWERCASE IS: $" 
+    ENDL DB 0AH, 0DH ,"$"
+.CODE
+MAIN PROC   
+    
+    ;DATASEGMENT INIT
+    MOV AX,@DATA
+    MOV DS,AX
+     
+    ;PRINTING INPUT MESSAGE
+    MOV AH,9
+    LEA DX, MSG
+    INT 21H  
+    
+    ;TAKING INPUT
+    MOV AH,1
+    INT 21H
+    MOV BL,AL  
+    
+    ;PRINTING NEW LINE
+     MOV AH,9
+     LEA DX,ENDL
+     INT 21H
+    
+    ;PRINT ANSWER MESSAGE
+    MOV AH,9
+    LEA DX, MSG2
+    INT 21H
+    
+    ;PRINTING OUTPUT NOW
+    MOV AH, 2 
+    add BL, 20H
+    MOV DL,BL
+    INT 21H
+    
+       
+    
+MOV AH, 4CH
+INT 21H    
+MAIN ENDP    
+END MAIN
+
+
+// ADDITION AND SUBTRACTION
+.MODEL SMALL
+.STACK 100H
+.DATA  
+    ENDL DB 0AH, 0DH, "$"   ; newline string  
+    STR1 DB "INPUT NUMBER: $"
+    STR2 DB "THE RESULT IS: $"
+    NUM1 DB ? 
+    NUM2 DB ?              ; uninitialized variable to store input    
+    RESULT DB ?
+
+.CODE
+MAIN PROC
+    ; Initialize data segment
+    MOV AX, @DATA
+    MOV DS, AX
+    
+    
+    ;PRINTING STRING 1
+    MOV AH, 9
+    LEA DX, STR1
+    INT 21H
+    
+    ; Take input 1
+    MOV AH, 1
+    INT 21H  
+    SUB AL, '0'
+    MOV NUM1, AL
+
+    ; Print newline
+    MOV AH, 9
+    LEA DX, ENDL
+    INT 21H    
+    
+    ;PRINTING STRING 1 AGAIN
+    MOV AH, 9
+    LEA DX, STR1
+    INT 21H  
+    
+    ; TAKE INPUT 2
+    MOV AH, 1  
+    INT 21H
+    SUB AL, '0'    
+    MOV NUM2, AL 
+    
+    ;PRINT NEW LINE
+    MOV AH, 9
+    LEA DX, ENDL
+    INT 21H 
+    
+    
+    ;PRINTING STR2
+    MOV AH, 9
+    LEA DX, STR2
+    INT 21H  
+    
+    
+    ;-------------------------------
+        MOV AL, NUM1
+        ADD AL, NUM2
+        MOV RESULT, AL
+    ;-------------------------------
+
+    ; Print the character 
+    ADD AL, '0'
+    MOV DL, AL
+    MOV AH, 2
+    INT 21H
+
+    ; Exit program
+    MOV AH, 4CH
+    INT 21H   
+    
+MAIN ENDP
+END MAIN
+
+
+
+/// A1 ONLINE CODE
+
+.MODEL SMALL
+.STACK 100H
+.DATA
+;--------------------  
+STR1 DB "INPUT A NUMBER: $"
+STR2 DB "THE RESULT IS: $" 
+
+ENDL DB 0AH ,0DH ,"$"
+
+B DB ?
+A DB 5
+C equ 1   
+
+;FINDING A=A-2B+3C
+
+;--------------------
+
+.CODE
+MAIN PROC 
+    MOV AX, @DATA
+    MOV DS, AX   
+    
+    ; printing msg
+    MOV AH,9  
+    LEA DX , STR1
+    INT 21H  
+    
+    ;INPUT TAKING
+    MOV AH, 1
+    INT 21H 
+    SUB AL, '0'
+    MOV B, AL
+    
+    
+;======================== 
+
+MOV AL, B
+ADD AL, B
+MOV B, AL
+
+MOV AL, C
+ADD AL, C
+ADD AL, C
+
+SUB AL,B
+
+ADD AL, A 
+
+;----
+ADD AL, '0'
+;----
+MOV A, AL
+
+
+;========================      
+
+
+    ;PRINTING NEW LINE
+    MOV AH, 9
+    LEA DX, ENDL
+    INT 21H
+    
+    ;PRINTING STR2  
+    MOV AH, 9
+    LEA DX, STR2
+    INT 21H    
+    
+    ;PRINTING RESULT
+    MOV AH, 2
+    MOV DL, A
+    INT 21H
+
+MOV AH,4CH
+INT 21H
+MAIN ENDP
+END MAIN
+
+;;QUESTION TAKE INPUT OF A LOWERCASE AND SHOW OUTPUT
+
+.MODEL SMALL
+.STACK 100H
+.DATA
+;-----------------------
+STR1 DB "ENTER A UPPER CHAR TO MAKE IT LOWER: $" 
+STR2 DB "THE LOWERCASE LETTER IS: $"
+ENDL DB 0AH, 0DH, "$"
+CHAR DB ?
+
+;------------------------
+.CODE
+MAIN PROC
+;--------------CONNECT DATA----------------
+    MOV AX, @DATA
+    MOV DS, AX
+;------------------------------------------ 
+
+    
+   ;STR1 OUPUT
+    MOV AH, 9
+    LEA DX, STR1
+    INT 21H  
+
+   ;INPUT TAKING
+    MOV AH, 1
+    INT 21H 
+
+;--------------------PROCESS------------------------
+ADD AL,20H 
+MOV CHAR, AL
+;---------------------------------------------------  
+
+    ;NEW LINE PRITING
+    MOV AH, 9
+    LEA DX, ENDL
+    INT 21H
+    
+    ;PRINTING STR2
+    MOV AH, 9
+    LEA DX, STR2
+    INT 21H
+    
+    ;PRINTING RESULT
+    MOV AH, 2
+    MOV DL, CHAR
+    INT 21H    
+    
+
+
+
+
+MOV AH, 4CH
+INT 21H
+MAIN ENDP
+END MAIN
