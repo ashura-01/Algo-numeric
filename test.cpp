@@ -1,28 +1,39 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+double f(double x)
+{
+    return x * x - x - 2;
+}
+double g(double x)
+{
+    return 2 - x * x;
+}
+
+double fixedPoint()
+{
+    double x0 = 0, x1;
+    double error = 0.00001;
+    int maxIteration = 100;
+
+    do
+    {
+        x1 = g(x0);
+        if (maxIteration-- <= 0)
+        {
+            cout << "not convergent!..." << endl;
+            return -1;
+        }
+
+        cout << "Approx Root is--------> " << x1 << endl;
+        x0 = x1;
+    } while (fabs(f(x1)) > error);
+    cout << "Root is: " << x1 << endl;
+    return x1;
+}
 
 int32_t main()
 {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    cout.tie(nullptr);
-
-    ofstream outFile("data.txt"); 
-    if (!outFile)
-    {
-        cerr << "Cannot open file for writing!\n";
-        return 1;
-    } 
-
-    random_device rd;
-    mt19937 gen(rd());
-    uniform_int_distribution<int> dis(1, 1000000); 
-    for (int i = 0; i < 100000; i++)
-    {
-        outFile << dis(gen) << " ";
-    }
-    outFile.close();
-    
+    fixedPoint();
     return 0;
 }
