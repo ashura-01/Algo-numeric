@@ -25,7 +25,8 @@ void relax(
     int from,
     int to,
     int weight,
-    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> &minheap)
+    priority_queue<pair<int, int>, vector<pair<int, int>>, 
+    greater<>> &minheap)
 {
     if (distanceFromSource[to] > distanceFromSource[from] + weight)
     {
