@@ -1,7 +1,9 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct Edge {
+struct Edge
+{
+    int from;
     int to;
     int weight;
 };
@@ -13,7 +15,8 @@ vector<int> distanceFromSource;
 vector<int> parentNode;
 
 // INITIALIZE_SINGLE_SOURCE
-void initializeSingleSource(int numberOfNodes, int source) {
+void initializeSingleSource(int numberOfNodes, int source)
+{
     distanceFromSource.assign(numberOfNodes, INF);
     parentNode.assign(numberOfNodes, -1);
     distanceFromSource[source] = 0;
@@ -21,8 +24,10 @@ void initializeSingleSource(int numberOfNodes, int source) {
 
 // RELAX
 void relax(int from, int to, int weight,
-           priority_queue<pair<int,int>, vector<pair<int,int>>, greater<>> &minHeap) {
-    if (distanceFromSource[to] > distanceFromSource[from] + weight) {
+           priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> &minHeap)
+{
+    if (distanceFromSource[to] > distanceFromSource[from] + weight)
+    {
         distanceFromSource[to] = distanceFromSource[from] + weight;
         parentNode[to] = from;
         minHeap.push({distanceFromSource[to], to});
@@ -30,69 +35,67 @@ void relax(int from, int to, int weight,
 }
 
 // PRINT PATH
-void printPath(int node) {
-    if (node == -1) return;
+void printPath(int node)
+{
+    if (node == -1)
+        return;
     printPath(parentNode[node]);
     cout << node << " ";
 }
 
 // DIJKSTRA
-void dijkstra(int numberOfNodes, int source) {
+void dijkstra(int numberOfNodes, int source)
+{
     initializeSingleSource(numberOfNodes, source);
 
-    priority_queue<pair<int,int>, vector<pair<int,int>>, greater<>> minHeap;
+    priority_queue<pair<int, int>, 
+    vector<pair<int, int>>, greater<>> minHeap;
+
     minHeap.push({0, source});
 
-    while (!minHeap.empty()) {
+    while (!minHeap.empty())
+    {
         int currentDistance = minHeap.top().first;
         int currentNode = minHeap.top().second;
         minHeap.pop();
 
-        if (currentDistance > distanceFromSource[currentNode]) continue;
+        if (currentDistance > distanceFromSource[currentNode])
+            continue;
 
-        for (auto &edge : adjacencyList[currentNode]) {
+        for (auto &edge : adjacencyList[currentNode])
+        {
             relax(currentNode, edge.to, edge.weight, minHeap);
         }
     }
 }
 
-int main() {
+int main()
+{
     // -------- DUMMY INPUT (replace later) --------
     int numberOfNodes = 5;
     int sourceNode = 0;
 
     adjacencyList.assign(numberOfNodes, {});
-    adjacencyList[0].push_back({1, 4});
-    adjacencyList[0].push_back({2, 1});
-    adjacencyList[2].push_back({1, 2});
-    adjacencyList[1].push_back({3, 1});
-    adjacencyList[2].push_back({3, 5});
-    adjacencyList[3].push_back({4, 3});
+    adjacencyList[0].push_back({0, 1, 4}); 
+    adjacencyList[0].push_back({0, 2, 1}); 
+    adjacencyList[2].push_back({2, 1, 2}); 
+    adjacencyList[1].push_back({1, 3, 1}); 
+    adjacencyList[2].push_back({2, 3, 5}); 
+    adjacencyList[3].push_back({3, 4, 3}); 
 
-    /*
-    // -------- INPUT SECTION (commented) --------
-    int numberOfNodes, numberOfEdges;
-    cin >> numberOfNodes >> numberOfEdges;
-
-    adjacencyList.assign(numberOfNodes, {});
-    for (int i = 0; i < numberOfEdges; i++) {
-        int from, to, weight;
-        cin >> from >> to >> weight;
-        adjacencyList[from].push_back({to, weight});
-    }
-
-    int sourceNode;
-    cin >> sourceNode;
-    */
-    // -------------------------------------------
+   
 
     dijkstra(numberOfNodes, sourceNode);
 
-    for (int node = 0; node < numberOfNodes; node++) {
+    for (int node = 0; node < numberOfNodes; node++)
+    {
         cout << "Node " << node << ": ";
-        if (distanceFromSource[node] == INF) {
+        if (distanceFromSource[node] == INF)
+        {
             cout << "INF\n";
-        } else {
+        }
+        else
+        {
             cout << distanceFromSource[node] << " | Path: ";
             printPath(node);
             cout << "\n";

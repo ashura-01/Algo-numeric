@@ -30,18 +30,17 @@ void input(int nodes, int edges, vector<vector<int>> &graph)
     for (int i = 0; i < edges; i++)
     {
         int u, v;
-        cin>>u>>v;
+        cin >> u >> v;
         graph[u].push_back(v);
     }
-    
 }
 int main()
 {
-    int nodes ,edges;
-    cout<<"input number of nodes: ";
-    cin>>nodes;
-    cout<<"input number of edges: ";
-    cin>>edges;
+    int nodes, edges;
+    cout << "input number of nodes: ";
+    cin >> nodes;
+    cout << "input number of edges: ";
+    cin >> edges;
 
     vector<vector<int>> graph(nodes);
     input(nodes, edges, graph);
@@ -53,11 +52,10 @@ int main()
 
     while (!topoStack.empty())
     {
-        cout<<topoStack.top()<<"---->";
-            topoStack.pop();
+        cout << topoStack.top() << "---->";
+        topoStack.pop();
     }
-    cout<<endl;
-    
+    cout << endl;
 
     return 0;
 }
