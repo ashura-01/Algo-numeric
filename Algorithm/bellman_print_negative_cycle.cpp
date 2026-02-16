@@ -1,7 +1,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct Edge {
+struct Edge
+{
     int from, to, weight;
 };
 
@@ -11,28 +12,34 @@ vector<Edge> edgeList;
 vector<int> distanceFromSource, parentNode;
 
 // INITIALIZE
-void initializeSingleSource(int numberOfNodes, int source) {
+void initializeSingleSource(int numberOfNodes, int source)
+{
     distanceFromSource.assign(numberOfNodes, INF);
     parentNode.assign(numberOfNodes, -1);
     distanceFromSource[source] = 0;
 }
 
 // RELAX
-void relax(int from, int to, int weight) {
+void relax(int from, int to, int weight)
+{
     if (distanceFromSource[from] != INF &&
-        distanceFromSource[to] > distanceFromSource[from] + weight) {
+        distanceFromSource[to] > distanceFromSource[from] + weight)
+    {
         distanceFromSource[to] = distanceFromSource[from] + weight;
         parentNode[to] = from;
     }
 }
 
 // BELLMAN-FORD + NEGATIVE CYCLE PRINT
-bool bellmanFordWithNegativeCycle(int numberOfNodes, int source) {
+bool bellmanFordWithNegativeCycle(int numberOfNodes, int source)
+{
     initializeSingleSource(numberOfNodes, source);
 
     // V-1 relaxations
-    for (int i = 1; i <= numberOfNodes - 1; i++) {
-        for (auto &edge : edgeList) {
+    for (int i = 1; i <= numberOfNodes - 1; i++)
+    {
+        for (auto &edge : edgeList)
+        {
             relax(edge.from, edge.to, edge.weight);
         }
     }
@@ -40,10 +47,12 @@ bool bellmanFordWithNegativeCycle(int numberOfNodes, int source) {
     int cycleNode = -1;
 
     // Extra relaxation to detect cycle
-    for (auto &edge : edgeList) {
+    for (auto &edge : edgeList)
+    {
         if (distanceFromSource[edge.from] != INF &&
             distanceFromSource[edge.to] >
-            distanceFromSource[edge.from] + edge.weight) {
+                distanceFromSource[edge.from] + edge.weight)
+        {
 
             parentNode[edge.to] = edge.from;
             cycleNode = edge.to;
@@ -51,17 +60,20 @@ bool bellmanFordWithNegativeCycle(int numberOfNodes, int source) {
         }
     }
 
-    if (cycleNode == -1) return true;
+    if (cycleNode == -1)
+        return true;
 
     // Move inside the cycle
-    for (int i = 0; i < numberOfNodes; i++) {
+    for (int i = 0; i < numberOfNodes; i++)
+    {
         cycleNode = parentNode[cycleNode];
     }
 
     // Extract cycle
     vector<int> cycle;
     int current = cycleNode;
-    do {
+    do
+    {
         cycle.push_back(current);
         current = parentNode[current];
     } while (current != cycleNode);
@@ -70,13 +82,15 @@ bool bellmanFordWithNegativeCycle(int numberOfNodes, int source) {
     reverse(cycle.begin(), cycle.end());
 
     cout << "Negative weight cycle nodes: ";
-    for (int node : cycle) cout << node << " ";
+    for (int node : cycle)
+        cout << node << " ";
     cout << "\n";
 
     return false;
 }
 
-int main() {
+int main()
+{
     int numberOfNodes = 5;
     int sourceNode = 0;
 
@@ -90,8 +104,7 @@ int main() {
         {2, 4, 9},
         {3, 1, -2},
         {4, 0, 2},
-        {4, 3, 7}
-    };
+        {4, 3, 7}};
 
     bellmanFordWithNegativeCycle(numberOfNodes, sourceNode);
     return 0;
