@@ -229,8 +229,9 @@ int generateSparseGraph(int numOfVertices)
     return edges;
 }
 
-vector<vector<pair<int, int>>> readGraphFromFile(string filename, int &V)
+vector<vector<pair<int, int>>> readGraphFromFile(string filename)
 {
+    int V;
     ifstream file(filename);
 
     int E;
@@ -254,14 +255,16 @@ vector<vector<pair<int, int>>> readGraphFromFile(string filename, int &V)
 int main()
 {
     int numOfVertices = 50;
-    
-    
-    //data generatrion
-    int numberOfEdgesSparse = generateSparseGraph(50);
-    int numberOfEdgesDense = generateDenseGraph(50);
+    // ------------graph generation----------------
 
-    vector<vector<pair<int, int>>> denseGraph = readGraphFromFile("dense.txt", numberOfEdgesDense);
-    vector<vector<pair<int, int>>> sparseGraph = readGraphFromFile("sparse.txt", numberOfEdgesDense);
+    // generateSparseGraph(numOfVertices);
+    // generateDenseGraph(numOfVertices);
+    
+    //-------------data generatrion-------------------
+    
+
+    vector<vector<pair<int, int>>> denseGraph = readGraphFromFile("dense.txt");
+    vector<vector<pair<int, int>>> sparseGraph = readGraphFromFile("sparse.txt");
     vector<vector<int>> predecessorMatrix;
 
     LARGE_INTEGER freq, start, end;
