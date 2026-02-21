@@ -47,3 +47,15 @@ void findroots(double a, double b, double ds, double eps)
         x2=x1+ds;
     }
 }
+int main()
+{
+    double a, b, ds, eps;
+
+    cin >> a >> b;
+    cin >> ds;
+    cin >> eps;
+
+    findroots(a, b, ds, eps);
+
+    return 0;
+}
