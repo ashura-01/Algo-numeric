@@ -2,124 +2,42 @@
 #include <vector>
 using namespace std;
 
-vector<double> gaussElimination(vector<vector<double>> a)
-{
-    int n = a.size();
-    vector<double> x(n);
+double newtonDividedDifference(vector<double> x, vector<double> y, double xp) {
+    int n = x.size();
+    vector<vector<double>> table(n, vector<double>(n));
 
-    for (int i = 0; i < n - 1; i++)
-    {
-        for (int j = i + 1; j < n; j++)
-        {
-            double ratio = a[j][i] / a[i][i];
-            for (int k = 0; k <= n; k++)
-                a[j][k] -= ratio * a[i][k];
+    // first column = y values
+    for(int i=0;i<n;i++)
+        table[i][0] = y[i];
+
+    // build divided difference table
+    for(int i=1;i<n;i++){
+        for(int j=0;j<n-i;j++){
+            table[j][i] = (table[j+1][i-1] - table[j][i-1]) / (x[j+i] - x[j]);
         }
     }
 
-    x[n - 1] = a[n - 1][n] / a[n - 1][n - 1];
+    // apply Newton formula
+    double yp = table[0][0];
 
-    for (int i = n - 2; i >= 0; i--)
-    {
-        double sum = 0;
-        for (int j = i + 1; j < n; j++)
-            sum += a[i][j] * x[j];
+    for(int i=1;i<n;i++){
+        double product = 1;
+        for(int j=0;j<i;j++)
+            product *= (xp - x[j]);
 
-        x[i] = (a[i][n] - sum) / a[i][i];
+        yp += product * table[0][i];
     }
 
-    return x;
+    return yp;
 }
 
-vector<double> gaussJordan(vector<vector<double>> a)
-{
-    int n = a.size();
+int main() {
+    vector<double> x = {1,2,3,4};
+    vector<double> y = {1,4,9,16};
 
-    for (int i = 0; i < n; i++)
-    {
-        double pivot = a[i][i];
+    double xp = 2.5;
 
-        for (int j = 0; j <= n; j++)
-            a[i][j] /= pivot;
+    double yp = newtonDividedDifference(x, y, xp);
 
-        for (int k = 0; k < n; k++)
-        {
-            if (k != i)
-            {
-                double factor = a[k][i];
-                for (int j = 0; j <= n; j++)
-                    a[k][j] -= factor * a[i][j];
-            }
-        }
-    }
-
-    vector<double> x(n);
-    for (int i = 0; i < n; i++)
-        x[i] = a[i][n];
-
-    return x;
-}
-
-vector<double> jacobi(vector<vector<double>> a, vector<double> b, int iter)
-{
-    int n = a.size();
-    vector<double> x(n, 0), x_new(n);
-
-    for (int k = 0; k < iter; k++)
-    {
-        for (int i = 0; i < n; i++)
-        {
-            double sum = 0;
-            for (int j = 0; j < n; j++)
-                if (j != i)
-                    sum += a[i][j] * x[j];
-
-            x_new[i] = (b[i] - sum) / a[i][i];
-        }
-        x = x_new;
-    }
-
-    return x;
-}
-vector<double> gaussSeidel(vector<vector<double>> a, vector<double> b, int iter)
-{
-    int n = a.size();
-    vector<double> x(n, 0);
-
-    for (int k = 0; k < iter; k++)
-    {
-        for (int i = 0; i < n; i++)
-        {
-            double sum = 0;
-            for (int j = 0; j < n; j++)
-                if (j != i)
-                    sum += a[i][j] * x[j];
-
-            x[i] = (b[i] - sum) / a[i][i];
-        }
-    }
-
-    return x;
-}
-int main()
-{
-    vector<vector<double>> A = {
-        {10, -1, 2},
-        {-1, 11, -1},
-        {2, -1, 10}};
-
-    vector<double> B = {6, 25, -11};
-
-    vector<double> ans = jacobi(A, B, 10);
-
-    for (double v : ans)
-        cout << v << " ";
-
-    // vector<vector<double>> arr = {{2, 1, -1, 8},
-    //                               {-3, -1, 2, -11},
-    //                               {-2, 1, 2, -3}};
-    // vector<double> answer = gaussJordan(arr);
-    // for (auto elem : answer)
-    //     cout << elem << " ";
-    // return 0;
+    cout << "Interpolated value: " << yp << endl;
 }
