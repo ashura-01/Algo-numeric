@@ -1,86 +1,73 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int counts = 1;
+#define INF 1e9
 
-// Polynomial evaluation (Horner's method)
-double f(vector<double> &arr, int n, double x)
+struct Edge {
+    int to, weight;
+};
+
+void floydWarshall(int numOfVertices, vector<vector<pair<int, int>>> &graph)
 {
-    double result = 0;
-    for (int i = n; i >= 0; i--)
-        result = result * x + arr[i];
-    return result;
-}
+    vector<vector<int>> distance(numOfVertices, vector<int>(numOfVertices, INF));
+    vector<vector<int>> predecessor(numOfVertices, vector<int>(numOfVertices, -1));
 
-// Polynomial derivative evaluation
-double df(vector<double> &arr, int n, double x)
-{
-    double result = 0;
-    for (int i = n; i > 0; i--)
-        result = result * x + i * arr[i];
-    return result;
-}
-
-// Newton-Raphson using your exact style
-double newton_raphson(vector<double> &arr, int n, double initialvalue, double tol = 1e-12)
-{
-    cout << fixed << setprecision(17);
-    double nextvalue, functionAtNext;
-
-    do
+    for (int vertex = 0; vertex < numOfVertices; vertex++)
     {
-        if (df(arr, n, initialvalue) == 0.0) // fixed line
+        distance[vertex][vertex] = 0;
+        for (auto &p : graph[vertex])
         {
-            cout << "error....." << endl;
-            return -1.0;
+            int neighbor = p.first;
+            int weight = p.second;
+            distance[vertex][neighbor] = min(distance[vertex][neighbor], weight);
+            predecessor[vertex][neighbor] = vertex;
+        }
+    }
+
+    for (int k = 0; k < numOfVertices; k++)
+        for (int i = 0; i < numOfVertices; i++)
+            for (int j = 0; j < numOfVertices; j++)
+                if (distance[i][k] < INF && distance[k][j] < INF &&
+                    distance[i][j] > distance[i][k] + distance[k][j])
+                {
+                    distance[i][j] = distance[i][k] + distance[k][j];
+                    predecessor[i][j] = predecessor[k][j];
+                }
+
+    for (int i = 0; i < numOfVertices; i++)
+        if (distance[i][i] < 0)
+        {
+            cout << "Negative Cycle Detected" << endl;
+            return;
         }
 
-        nextvalue = initialvalue - f(arr, n, initialvalue) / df(arr, n, initialvalue);
-        initialvalue = nextvalue;
-        functionAtNext = f(arr, n, initialvalue);
-
-        cout << counts << ". the approx root value is----------->" << nextvalue << endl;
-        counts++;
-
-    } while (fabs(functionAtNext) > tol);
-
-    cout << "the root value is: " << nextvalue << endl;
-    return nextvalue;
-}
-
-// Synthetic Division
-void syntheticDivision(vector<double> &a, int &n, double root) {
-    vector<double> b(n + 1);
-
-    b[n] = a[n];
-    for (int i = n - 1; i >= 0; i--) {
-        b[i] = a[i] + b[i + 1] * root;
-    }
-
-    for (int i = 0; i < n; i++) {
-        a[i] = b[i + 1];
-    }
-
-    n--;
-}
-
-int32_t main()
-{
-    // Example polynomial: x^3 - 6x^2 + 11x - 6
-    vector<double> a = {-6, 11, -6, 1}; // coefficients a0, a1, a2, a3
-    int n = 3;                           // degree
-    double initial_guess = 1.5;
-
-    while (n > 1)
+    // Print distance matrix
+    cout << "Shortest Distances Matrix:\n";
+    for (int i = 0; i < numOfVertices; i++)
     {
-        double root = newton_raphson(a, n, initial_guess);
-        syntheticDivision(a, n, root);
-        initial_guess = root; // reuse for next root
+        for (int j = 0; j < numOfVertices; j++)
+        {
+            if (distance[i][j] == INF)
+                cout << "INF ";
+            else
+                cout << distance[i][j] << " ";
+        }
+        cout << endl;
     }
+}
 
-    // Last root (linear term)
-    double lastRoot = -a[0] / a[1];
-    cout << "Final root: " << lastRoot << endl;
+int main()
+{
+    int V = 4; // number of vertices
+    vector<vector<pair<int,int>>> graph(V);
+
+    // Add edges: graph[u].push_back({v, weight});
+    graph[0].push_back({1, 5});
+    graph[0].push_back({3, 10});
+    graph[1].push_back({2, 3});
+    graph[2].push_back({3, 1});
+
+    floydWarshall(V, graph);
 
     return 0;
 }

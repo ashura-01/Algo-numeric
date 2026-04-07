@@ -8,14 +8,16 @@ vector<int> arr;
 // set<int> blockedRows;  // rows where queens cannot be placed
 // set<int> blockedCols;  // columns where queens cannot be placed
 
-bool Place(int k, int i) {
+bool Place(int k, int i)
+{
     // Uncomment to block specific rows
     // if (blockedRows.count(k)) return false;
 
     // Uncomment to block specific columns
     // if (blockedCols.count(i)) return false;
 
-    for (int j = 1; j <= k - 1; j++) {
+    for (int j = 1; j <= k - 1; j++)
+    {
 
         // ❌ Same column
         if (arr[j] == i)
@@ -36,23 +38,30 @@ bool Place(int k, int i) {
     return true;
 }
 
-void NQueens(int k) {
-    for (int i = 1; i <= n; i++) {
-        if (Place(k, i)) {
+void NQueens(int k)
+{
+    for (int i = 1; i <= n; i++)
+    {
+        if (Place(k, i))
+        {
             arr[k] = i;
 
-            if (k == n) {
+            if (k == n)
+            {
                 for (int j = 1; j <= n; j++)
                     cout << arr[j] << " ";
                 cout << endl;
-            } else {
+            }
+            else
+            {
                 NQueens(k + 1);
             }
         }
     }
 }
 
-int main() {
+int main()
+{
     cin >> n;
     arr.resize(n + 1); // 1-based indexing
 
