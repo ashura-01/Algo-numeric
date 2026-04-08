@@ -1,73 +1,68 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define INF 1e9
-
-struct Edge {
-    int to, weight;
-};
-
-void floydWarshall(int numOfVertices, vector<vector<pair<int, int>>> &graph)
+struct edge
 {
-    vector<vector<int>> distance(numOfVertices, vector<int>(numOfVertices, INF));
-    vector<vector<int>> predecessor(numOfVertices, vector<int>(numOfVertices, -1));
-
-    for (int vertex = 0; vertex < numOfVertices; vertex++)
+    int u_tex, v_tex, weight;
+};
+int findparent(int vertex, vector<int> parent)
+{
+    if (vertex != parent[vertex])
     {
-        distance[vertex][vertex] = 0;
-        for (auto &p : graph[vertex])
-        {
-            int neighbor = p.first;
-            int weight = p.second;
-            distance[vertex][neighbor] = min(distance[vertex][neighbor], weight);
-            predecessor[vertex][neighbor] = vertex;
-        }
+        parent[vertex] = findparent(parent[vertex], parent);
     }
 
-    for (int k = 0; k < numOfVertices; k++)
-        for (int i = 0; i < numOfVertices; i++)
-            for (int j = 0; j < numOfVertices; j++)
-                if (distance[i][k] < INF && distance[k][j] < INF &&
-                    distance[i][j] > distance[i][k] + distance[k][j])
-                {
-                    distance[i][j] = distance[i][k] + distance[k][j];
-                    predecessor[i][j] = predecessor[k][j];
-                }
+    return parent[vertex];
+}
 
-    for (int i = 0; i < numOfVertices; i++)
-        if (distance[i][i] < 0)
-        {
-            cout << "Negative Cycle Detected" << endl;
-            return;
-        }
+void unionsets(int u, int v, vector<int> &parent, vector<int> &rank)
+{
+    int pu = findparent(u, parent);
+    int pv = findparent(v, parent);
 
-    // Print distance matrix
-    cout << "Shortest Distances Matrix:\n";
-    for (int i = 0; i < numOfVertices; i++)
+    if (pu != pv)
     {
-        for (int j = 0; j < numOfVertices; j++)
+        if (rank[pu] > rank[pv])
         {
-            if (distance[i][j] == INF)
-                cout << "INF ";
-            else
-                cout << distance[i][j] << " ";
+            swap(pu, pv);
         }
-        cout << endl;
+        if (rank[pu] == rank[pv])
+            rank[pu]++;
     }
+}
+
+pair<int, vector<edge>> kruskal(int numVertices, vector<edge> &edges)
+{
+    vector<int> parent(numVertices);
+    vector<int> rank(numVertices, 0);
+    vector<edge> mstedges;
+    int totalWeight;
+
+    sort(edges.begin(), edges.end(), [](edge &a, edge &b)
+         { return a.weight < b.weight; });
+    
+    for (int i = 0; i < numVertices; i++)
+    {
+        parent[i]=i;
+    }
+
+    for(auto &connection: edges)
+    {
+        int pu = findparent(connection.u_tex, parent);
+        int pv= findparent(connection.v_tex, parent);
+
+        if (pu!=pv)
+        {
+            unionsets(connection.u_tex, connection.v_tex, parent, rank);
+            mstedges.push_back(connection);
+            totalWeight+= connection.weight;
+        }
+        
+    }
+    
+    return {totalWeight, mstedges};
 }
 
 int main()
 {
-    int V = 4; // number of vertices
-    vector<vector<pair<int,int>>> graph(V);
-
-    // Add edges: graph[u].push_back({v, weight});
-    graph[0].push_back({1, 5});
-    graph[0].push_back({3, 10});
-    graph[1].push_back({2, 3});
-    graph[2].push_back({3, 1});
-
-    floydWarshall(V, graph);
-
-    return 0;
 }
