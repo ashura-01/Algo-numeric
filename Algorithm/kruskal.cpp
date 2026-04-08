@@ -66,15 +66,16 @@ pair<int, vector<Edge>> kruskalMST(int numVertices, vector<Edge> &edges)
 
 int main()
 {
-    int V, E;
-    cin >> V >> E;
+    int V = 4;  // number of vertices
+    int E = 5;  // number of edges
 
-    vector<Edge> edges(E);
-
-    for (int i = 0; i < E; i++)
-    {
-        cin >> edges[i].vertexU >> edges[i].vertexV >> edges[i].weight;
-    }
+    vector<Edge> edges = {
+        {0, 1, 10},
+        {0, 2, 6},
+        {0, 3, 5},
+        {1, 3, 15},
+        {2, 3, 4}
+    };
 
     auto result = kruskalMST(V, edges);
 
