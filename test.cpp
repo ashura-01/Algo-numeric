@@ -64,6 +64,45 @@ pair<int, vector<edge>> kruskal(int numVertices, vector<edge> &edges)
     return {totalWeight, mstedges};
 }
 
+
+
+
+vector<vector<int>> mcm(vector<int> &dim, int &optimal)
+{
+    int n= dim.size()-1;
+    vector<vector<int>> cost(n+1, vector<int>(n+1, 0));
+    vector<vector<int>> split(n+1, vector<int>(n+1, 0));
+
+    for (int len = 2; len <=n ; len++)
+    {
+        for (int i = 1; i < n-len+1; i++)
+        {
+            int j= i+len-1;
+            cost[i][j]= INT_MAX;
+
+            for (int k=i ; k<j ; k++)
+            {
+                int current = cost[i][k]+cost[k+1][j]+dim[i-1]*dim[k]*dim[j];
+                if(current < cost[i][j])
+                {
+                    cost[i][j]= current;
+                    split[i][j]=k;
+                }
+            }
+            
+        }
+        
+    }
+    
+}
+
+
+
+
+
+
+
+
 int main()
 {
     int V = 4;  // number of vertices
