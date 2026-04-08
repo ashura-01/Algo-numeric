@@ -5,7 +5,7 @@ struct edge
 {
     int u_tex, v_tex, weight;
 };
-int findparent(int vertex, vector<int> parent)
+int findparent(int vertex, vector<int> &parent)
 {
     if (vertex != parent[vertex])
     {
@@ -26,6 +26,7 @@ void unionsets(int u, int v, vector<int> &parent, vector<int> &rank)
         {
             swap(pu, pv);
         }
+        parent[pv]=pu;
         if (rank[pu] == rank[pv])
             rank[pu]++;
     }
@@ -65,4 +66,26 @@ pair<int, vector<edge>> kruskal(int numVertices, vector<edge> &edges)
 
 int main()
 {
+    int V = 4;  // number of vertices
+    int E = 5;  // number of edges
+
+    vector<edge> edges = {
+        {0, 1, 10},
+        {0, 2, 6},
+        {0, 3, 5},
+        {1, 3, 15},
+        {2, 3, 4}
+    };
+
+    auto result = kruskal(V, edges);
+
+    cout << "Total MST Weight: " << result.first << endl;
+    cout << "Edges in MST:\n";
+
+    for (auto &e : result.second)
+    {
+        cout << e.u_tex << " - " << e.v_tex << " : " << e.weight << endl;
+    }
+
+    return 0;
 }
