@@ -1,102 +1,45 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct edge
+
+int n, minCost= INT_MAX;
+vector<vector<int>> graph;
+vector<bool> visited;
+vector<int> path, bestpath;
+
+void tsp(int city, int count, int cost)
 {
-    int u_tex, v_tex, weight;
-};
-int findparent(int vertex, vector<int> &parent)
-{
-    if (vertex != parent[vertex])
+    if(count==n && graph[city][0]!=0)
     {
-        parent[vertex] = findparent(parent[vertex], parent);
-    }
-
-    return parent[vertex];
-}
-
-void unionsets(int u, int v, vector<int> &parent, vector<int> &rank)
-{
-    int pu = findparent(u, parent);
-    int pv = findparent(v, parent);
-
-    if (pu != pv)
-    {
-        if (rank[pu] > rank[pv])
+        int total= cost+graph[city][0];
+        if (total<minCost)
         {
-            swap(pu, pv);
+            minCost=total;
+            bestpath=path;
+            bestpath.push_back(0);
         }
-        parent[pv]=pu;
-        if (rank[pu] == rank[pv])
-            rank[pu]++;
-    }
-}
-
-pair<int, vector<edge>> kruskal(int numVertices, vector<edge> &edges)
-{
-    vector<int> parent(numVertices);
-    vector<int> rank(numVertices, 0);
-    vector<edge> mstedges;
-    int totalWeight;
-
-    sort(edges.begin(), edges.end(), [](edge &a, edge &b)
-         { return a.weight < b.weight; });
-    
-    for (int i = 0; i < numVertices; i++)
-    {
-        parent[i]=i;
-    }
-
-    for(auto &connection: edges)
-    {
-        int pu = findparent(connection.u_tex, parent);
-        int pv= findparent(connection.v_tex, parent);
-
-        if (pu!=pv)
-        {
-            unionsets(connection.u_tex, connection.v_tex, parent, rank);
-            mstedges.push_back(connection);
-            totalWeight+= connection.weight;
-        }
+        return;
         
     }
-    
-    return {totalWeight, mstedges};
-}
 
-
-
-
-vector<vector<int>> mcm(vector<int> &dim, int &optimal)
-{
-    int n= dim.size()-1;
-    vector<vector<int>> cost(n+1, vector<int>(n+1, 0));
-    vector<vector<int>> split(n+1, vector<int>(n+1, 0));
-
-    for (int len = 2; len <=n ; len++)
+    for (int i = 0; i < n; i++)
     {
-        for (int i = 1; i < n-len+1; i++)
+        if(!visited[i]&& graph[city][i]!=0)
         {
-            int j= i+len-1;
-            cost[i][j]= INT_MAX;
-
-            for (int k=i ; k<j ; k++)
+            int newcost= cost+graph[city][i];
+            if (newcost<minCost)
             {
-                int current = cost[i][k]+cost[k+1][j]+dim[i-1]*dim[k]*dim[j];
-                if(current < cost[i][j])
-                {
-                    cost[i][j]= current;
-                    split[i][j]=k;
-                }
+                visited[i]=true;
+                path.push_back(i);
+                tsp(i, count+1, newcost);
+                visited[i]=false;
+                path.pop_back();
             }
             
         }
-        
     }
     
 }
-
-
 
 
 
@@ -105,26 +48,18 @@ vector<vector<int>> mcm(vector<int> &dim, int &optimal)
 
 int main()
 {
-    int V = 4;  // number of vertices
-    int E = 5;  // number of edges
-
-    vector<edge> edges = {
-        {0, 1, 10},
-        {0, 2, 6},
-        {0, 3, 5},
-        {1, 3, 15},
-        {2, 3, 4}
+    graph = {
+        {0, 10, 15, 20},
+        {10, 0, 35, 25},
+        {15, 35, 0, 30},
+        {20, 25, 30, 0}
     };
+    n= graph.size();
+    visited.assign(n, false);
+    visited[0]=true;
+    path.push_back(0);
 
-    auto result = kruskal(V, edges);
-
-    cout << "Total MST Weight: " << result.first << endl;
-    cout << "Edges in MST:\n";
-
-    for (auto &e : result.second)
-    {
-        cout << e.u_tex << " - " << e.v_tex << " : " << e.weight << endl;
-    }
+    tsp(0,1,0);
 
     return 0;
 }
